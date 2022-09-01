@@ -8,7 +8,6 @@ import {abis} from '../../Abis/abis'
 const contractkishimotoV1 = '0x9023941af3D137c918f61e8ab804b79A325b8cE8';
 const contractkishimotoV1BSC = '0x6aA66ef69BaA89707fBcfE44CA16f01239CD4BF2';
 
-mysql -h localhost -u root -p pass 12345678
 const contractkatsumi = '0xAe0B8101347c708EfD8bb4133BC2E77958F7BF13'
 const contractMigrate = '0x561fabeC1967f07a859004Db7686d8422c6Cafeb'
 
