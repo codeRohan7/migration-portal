@@ -36,3 +36,20 @@
     transform: rotate(360deg);
   }
 }
+
+
+.walletConnectBtn{
+width: 26px;
+height: 26px;
+
+}
+
+.metamaskwalletBtn{
+  width: 26px;
+  height: 26px;
+  
+  }
+
+  .modal-backdrop.show {
+  opacity: 0 !important;
+  }
