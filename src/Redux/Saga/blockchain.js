@@ -6,7 +6,9 @@ import Web3 from 'web3'
 import {abis} from '../../Abis/abis'
 
 const contractkishimotoV1 = '0x9023941af3D137c918f61e8ab804b79A325b8cE8';
+const contractkishimotoV2 = '0x95189C1B40a01695e3FfA198cA6722C811be342d';
 const contractkishimotoV1BSC = '0x6aA66ef69BaA89707fBcfE44CA16f01239CD4BF2';
+const contractkishimotoV2BSC = '0x62909F16C600B018521d30f657c3bfAc3428ac88';
 
 const contractkatsumi = '0xAe0B8101347c708EfD8bb4133BC2E77958F7BF13'
 const contractMigrate = '0x561fabeC1967f07a859004Db7686d8422c6Cafeb'
