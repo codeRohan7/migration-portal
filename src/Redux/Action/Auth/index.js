@@ -15,8 +15,8 @@ export const connectWalletAction = (value) => {
   return { type, value };
 };
 
-export const connectMigrateContract = () => {
+export const connectMigrateContract = (value) => {
   const type = CONNECT_MIGRATE;
-  return { type };
+  return { type,value };
 };
 

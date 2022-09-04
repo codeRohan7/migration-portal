@@ -10,7 +10,7 @@ import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import { providerOptions } from "./providers";
 import { useDispatch } from "react-redux";
-import {connectWalletAction} from '../Redux/Action/Auth/index'
+import {connectWalletAction,connectMigrateContract} from '../Redux/Action/Auth/index'
 const style = {
   position: 'absolute',
   top: '50%',
@@ -62,6 +62,7 @@ export default function Wallet() {
   const handleNetwork = (e) => {
     const id = e.target.value;
     dispatch(connectWalletAction({account,id}))
+    dispatch(connectMigrateContract(id))
 
     setNetwork(Number(id));
   };
@@ -93,7 +94,6 @@ export default function Wallet() {
   const refreshState = () => {
     setAccount();
     setChainId();
- 
     setVerified(undefined);
   };
 

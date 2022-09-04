@@ -11,6 +11,8 @@ const contractkishimotoV1BNB = '0x6aA66ef69BaA89707fBcfE44CA16f01239CD4BF2';
 const contractkishimotoV2BNB = '0x62909F16C600B018521d30f657c3bfAc3428ac88';
 const contractkatsumi = '0xAe0B8101347c708EfD8bb4133BC2E77958F7BF13'
 const contractMigrate = '0x561fabeC1967f07a859004Db7686d8422c6Cafeb'
+const contractMigratebnb = '0x8BDBDC0Cc6eF90f4C4d83b1c7Bd4aEa05F5548bF'
+
 
 
 // localStorage.getItem("p")
@@ -88,23 +90,55 @@ export function* getContractSagas(val) {
     
 }
 
-export function* getmigrateContractSagas() {
-	
+export function* getmigrateContractSagas(val) {
+console.log(val);
+const { value } = val
+console.log(value);
         let response = "";
-        try {
-            response = new web3.eth.Contract(
 
-                abis.onmigrateContract,
-                contractMigrate
-            )
-            yield put({ type: types.CONNECT_MIGRATE_SUCCESS, response });
+        switch (value) {
+
+            case "3":
+                try {
+                    response = new web3.eth.Contract(
+        
+                        abis.onmigrateContract,
+                        contractMigrate
+                    )
+                    yield put({ type: types.CONNECT_MIGRATE_SUCCESS, response });
+                }
+                catch (error) {
+                    yield put({
+                        type: types.CONNECT_MIGRATE_ERROR, response: error
+                    });
+                    return false;
+                }
+                break;
+        
+                case '97':
+                    try {
+                        response = new web3.eth.Contract(
+            
+                            abis.onmigratebnb,
+                            contractMigratebnb
+                        )
+                        yield put({ type: types.CONNECT_MIGRATE_SUCCESS, response });
+                    }
+                    catch (error) {
+                        yield put({
+                            type: types.CONNECT_MIGRATE_ERROR, response: error
+                        });
+                        return false;
+                    }
+                    break;
+        
+            default:
+                break;
         }
-        catch (error) {
-            yield put({
-                type: types.CONNECT_MIGRATE_ERROR, response: error
-            });
-            return false;
-        }
+
+
+
+      
      
         
 }

@@ -14,11 +14,14 @@ const Migrate = (props) => {
   const [migrateContract, setMigrate] = useState("");
   const [MigrateBalance, setMigrateBalance] = useState("");
   const [allowance, setAllowance] = useState("");
+  const [selectedToken, setSelectedToken] = useState("");
 
-  useEffect(() => {
-    dispatch(getcontract("kishimotoV1", "3"));
-    dispatch(connectMigrateContract());
-  }, []);
+
+
+  // useEffect(() => {
+  //   dispatch(getcontract("kishimotoV1", "3"));
+  //   dispatch(connectMigrateContract());
+  // }, []);
 
   const getcontractReducerData = useSelector(
     (state) => state.getcontractReducer
@@ -34,13 +37,18 @@ const Migrate = (props) => {
     setcontract(getcontractReducerData?.response);
     setAccount(connectWalletReducerData?.response);
     setMigrate(connectMigrateReducerData?.response);
+
     setwalletbalance("");
     setMigrateBalance("");
   }, [connectWalletReducerData, getcontractReducerData]);
 
   useEffect(() => {
+    setSelectedToken("")
+
+  }, [connectMigrateReducerData])
+  
+  useEffect(() => {
     if (account) {
-      console.log(contract);
       contract.methods
         .allowance(contract._address, account?.account)
         .call()
@@ -59,6 +67,7 @@ const Migrate = (props) => {
     }
   }, [contract]);
   const handleSwitchToken = (e) => {
+    setSelectedToken(e)
     if (account) {
       const value = { network: e, id: account?.id };
       dispatch(getcontract(value));
@@ -71,7 +80,6 @@ const Migrate = (props) => {
         .getClaimableToken(account?.account, contract._address)
         .call()
         .then((res) => {
-          console.log(res);
           const etherValue = Web3.utils.fromWei(res, "ether");
           setMigrateBalance(etherValue);
         });
@@ -80,7 +88,6 @@ const Migrate = (props) => {
 
   const handleMigrate = () => {
     if (walletbalance && account) {
-  console.log(contract._address);
       migrateContract.methods
         .migrate(contract._address)
         .send(
@@ -140,6 +147,7 @@ const Migrate = (props) => {
                     <form className="form-section">
                       <div className="btn-group">
                         <select
+                        value={selectedToken}
                           onChange={(e) => handleSwitchToken(e.target.value)}
                           className="btn btn-white dropdown-toggle"
                           style={{ background: "white" }}
