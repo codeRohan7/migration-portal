@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 const networks = {
     polygon: {
       chainId: `0x${Number(137).toString(16)}`,

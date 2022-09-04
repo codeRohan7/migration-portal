@@ -15,6 +15,9 @@
     font-size: 12px;
     line-height: 15px;
 }
+option{
+    color:black
+}
 .header-btn:hover{
     background-color: #51C4C9;
     border: 2px solid #51C4C9;

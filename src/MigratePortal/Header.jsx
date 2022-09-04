@@ -2,7 +2,6 @@ import React from 'react'
 import { useEffect, useState } from "react";
 
 import { useWeb3React } from "@web3-react/core";
-import { networkParams } from "./networks";
 import { connectors } from "./connectors";
 import { toHex, truncateAddress } from "./utils";
 import Wallet from './wallets';
@@ -22,17 +21,7 @@ function Header() {
         active
       } = useWeb3React();
     const networks = {
-        polygon: {
-          chainId: `0x${Number(137).toString(16)}`,
-          chainName: "Polygon Mainnet",
-          nativeCurrency: {
-            name: "MATIC",
-            symbol: "MATIC",
-            decimals: 18
-          },
-          rpcUrls: ["https://polygon-rpc.com/"],
-          blockExplorerUrls: ["https://polygonscan.com/"]
-        },
+        
         bsc: {
           chainId: `0x${Number(56).toString(16)}`,
           chainName: "Binance Smart Chain Mainnet",
@@ -87,11 +76,14 @@ function Header() {
   };
 
   useEffect(() => {
-    window.ethereum.on("chainChanged", networkChanged);
+    if(window.ethereum){
+      window.ethereum.on("chainChanged", networkChanged);
 
-    return () => {
-      window.ethereum.removeListener("chainChanged", networkChanged);
-    };
+      return () => {
+        window.ethereum.removeListener("chainChanged", networkChanged);
+      };
+    }
+   
   }, []);
 
   const handleNetwork = (e) => {
@@ -155,9 +147,7 @@ function Header() {
         </li>
         <li className="nav-item">
         
-           
            <Wallet/>
-            {/* <img src="/assets/images/metamask.png" alt="button image" /> */}
         </li>
       </ul>
     </div>

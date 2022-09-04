@@ -1,74 +1,113 @@
-import React,{useEffect,useState} from "react";
+import React, { useEffect, useState } from "react";
 import Wallet from "./wallets";
-import {getcontract,connectMigrateContract} from '../Redux/Action/Auth/index'
+import {
+  getcontract,
+  connectMigrateContract,
+} from "../Redux/Action/Auth/index";
 import { useDispatch, useSelector } from "react-redux";
 import Web3 from "web3";
 const Migrate = (props) => {
-const dispatch = useDispatch()
-const [contract,setcontract]=useState('')
-const [account,setAccount]=useState('')
-const [walletbalance,setwalletbalance]=useState('')
-const [migrateContract,setMigrate]=useState('')
-const [MigrateBalance,setMigrateBalance]=useState('')
+  const dispatch = useDispatch();
+  const [contract, setcontract] = useState("");
+  const [account, setAccount] = useState("");
+  const [walletbalance, setwalletbalance] = useState("");
+  const [migrateContract, setMigrate] = useState("");
+  const [MigrateBalance, setMigrateBalance] = useState("");
+  const [allowance, setAllowance] = useState("");
 
+  useEffect(() => {
+    dispatch(getcontract("kishimotoV1", "3"));
+    dispatch(connectMigrateContract());
+  }, []);
 
+  const getcontractReducerData = useSelector(
+    (state) => state.getcontractReducer
+  );
+  const connectWalletReducerData = useSelector(
+    (state) => state.connectWalletReducer
+  );
+  const connectMigrateReducerData = useSelector(
+    (state) => state.connectMigrateReducer
+  );
 
+  useEffect(() => {
+    setcontract(getcontractReducerData?.response);
+    setAccount(connectWalletReducerData?.response);
+    setMigrate(connectMigrateReducerData?.response);
+    setwalletbalance("");
+    setMigrateBalance("");
+  }, [connectWalletReducerData, getcontractReducerData]);
 
+  useEffect(() => {
+    if (account) {
+      console.log(contract);
+      contract.methods
+        .allowance(contract._address, account?.account)
+        .call()
+        .then((res) => {
+          console.log(res);
+          setAllowance(res);
+        });
+      contract.methods
+        ?.balanceOf(account?.account)
+        .call()
+        .then((res) => {
+          console.log(res);
+          const etherValue = Web3.utils.fromWei(res, "ether");
+          setwalletbalance(etherValue);
+        });
+    }
+  }, [contract]);
+  const handleSwitchToken = (e) => {
+    if (account) {
+      const value = { network: e, id: account?.id };
+      dispatch(getcontract(value));
+    }
+  };
 
-useEffect(() => {
-  dispatch(getcontract('kishimotoV1'))
-  dispatch(connectMigrateContract())
+  useEffect(() => {
+    if (walletbalance && account) {
+      migrateContract.methods
+        .getClaimableToken(account?.account, contract._address)
+        .call()
+        .then((res) => {
+          console.log(res);
+          const etherValue = Web3.utils.fromWei(res, "ether");
+          setMigrateBalance(etherValue);
+        });
+    }
+  }, [walletbalance]);
 
-}, [])
-
-const getcontractReducerData = useSelector(state=>state.getcontractReducer)
-const connectWalletReducerData = useSelector(state=>state.connectWalletReducer)
-const connectMigrateReducerData = useSelector(state=>state.connectMigrateReducer)
-
-
-
-useEffect(() => {
-
-    setcontract(getcontractReducerData?.response)
-     setAccount(connectWalletReducerData?.response)
-     setMigrate(connectMigrateReducerData?.response)
-
-}, [connectWalletReducerData,getcontractReducerData,])
-
-useEffect(() => {
-
-  if(account){
-    contract.methods?.balanceOf(account?.accounts[0]).call().then((res)=>{
-      const etherValue = Web3.utils.fromWei(res, 'ether');
-      setwalletbalance(etherValue)
-    })
-  }
-}, [contract])
-
-const handleSwitchToken = (e)=>{
-
-   dispatch(getcontract(e))
- 
-}
-
-
-useEffect(() => {
-if(walletbalance &&account){
-  migrateContract.methods.getClaimableToken(account?.accounts[0],contract._address).call().then((res)=>{
-    const etherValue = Web3.utils.fromWei(res, 'ether');
-    setMigrateBalance(etherValue)
-  })
-}
-
-}, [walletbalance])
+  const handleMigrate = () => {
+    if (walletbalance && account) {
+  console.log(contract._address);
+      migrateContract.methods
+        .migrate(contract._address)
+        .send(
+          {
+            from: account?.account,
+          },
+          function (error, transactionHash) {
+            console.log(error, transactionHash);
+          }
+        )
+        .on("error", function (error) {})
+        .on("transactionHash", function (transactionHash) {})
+        .on("receipt", function (receipt) {
+          console.log(receipt); // contains the new contract address
+        })
+        .on("confirmation", function (confirmationNumber, receipt) {
+          console.log(confirmationNumber, receipt);
+        })
+        .then(function (newContractInstance) {
+          console.log(newContractInstance); // instance with the new contract address
+        });
+    }
+  };
 
   return (
     <>
       <div className="wrapper ">
-        {/* Header start */}
-      
-        {/* Header end */}
-        {/* content start */}
         <div className="main-content">
           <div className="container">
             <div
@@ -98,14 +137,17 @@ if(walletbalance &&account){
                 <div className="clipPath-section">
                   <div className="main-clipPath">
                     <h3>MIGRATE</h3>
-                    <div className="form-section">
+                    <form className="form-section">
                       <div className="btn-group">
-                        <select onChange={(e)=>handleSwitchToken(e.target.value)}
+                        <select
+                          onChange={(e) => handleSwitchToken(e.target.value)}
                           className="btn btn-white dropdown-toggle"
                           style={{ background: "white" }}
                         >
-                            <option disabled selected="true" value={''}>Select Token</option>
-                          <option value={'kishimotoV1'}>Kishimoto v1</option>
+                          <option disabled selected="true" value={""}>
+                            Select Token
+                          </option>
+                          <option value={"kishimotoV1"}>Kishimoto v1</option>
                           <option value="Katsumi">Katsumi</option>
                         </select>
                       </div>
@@ -126,7 +168,7 @@ if(walletbalance &&account){
                                 id="emailHelp"
                                 className="form-text text-muted"
                               >
-                             {walletbalance?walletbalance:'0.00'}
+                                {walletbalance ? walletbalance : "0.00"}
                               </small>
                             </div>
                           </div>
@@ -145,21 +187,22 @@ if(walletbalance &&account){
                                 id="emailHelp"
                                 className="form-text text-muted"
                               >
-                               {MigrateBalance?MigrateBalance:'0.00'}
+                                {MigrateBalance ? MigrateBalance : "0.00"}
                               </small>
                             </div>
                           </div>
-                
+
                           <button
-                            type="submit"
+                            type="button"
                             className="btn btn-outline-success submit-btn"
+                            onClick={handleMigrate}
                           >
                             {" "}
-                            MIGRATE{" "}
+                            {allowance > walletbalance ? "APPROVE" : "MIGRATE"}
                           </button>
                         </form>
                       </div>
-                    </div>
+                    </form>
                   </div>
                 </div>
               </div>

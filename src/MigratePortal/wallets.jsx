@@ -2,7 +2,6 @@ import React,{ useEffect, useState } from "react";
 
 import SelectWalletModal from "./Modal";
 import { useWeb3React } from "@web3-react/core";
-import { networkParams } from "./networks";
 import { connectors } from "./connectors";
 
 import { toHex, truncateAddress } from "./utils";
@@ -50,14 +49,11 @@ export default function Wallet() {
       setProvider(provider);
       setLibrary(library);
       if (accounts) setAccount(accounts[0]);
-      dispatch(connectWalletAction({accounts,network}))
       setChainId(network.chainId);
-      console.log(network.chainId);
     } catch (error) {
       setError(error);
     }
   };
-console.log(chainId,"chainId");
   const web3Modal = new Web3Modal({
     cacheProvider: true, // optional
     providerOptions // required
@@ -65,6 +61,8 @@ console.log(chainId,"chainId");
   
   const handleNetwork = (e) => {
     const id = e.target.value;
+    dispatch(connectWalletAction({account,id}))
+
     setNetwork(Number(id));
   };
 
@@ -74,7 +72,6 @@ console.log(chainId,"chainId");
   };
 
   const switchNetwork = async (e) => {
-  
     try {
       await library.provider.request({
         method: "wallet_switchEthereumChain",
@@ -85,7 +82,6 @@ console.log(chainId,"chainId");
         try {
           await library.provider.request({
             method: "wallet_addEthereumChain",
-            params: [networkParams[toHex(network)]]
           });
         } catch (error) {
           setError(error);
@@ -94,26 +90,22 @@ console.log(chainId,"chainId");
     }
   };
 
-
   const refreshState = () => {
     setAccount();
     setChainId();
-    setNetwork("");
-    setMessage("");
-    setSignature("");
+ 
     setVerified(undefined);
   };
 
   const disconnect = async() => {
     await web3Modal.clearCachedProvider();
-    refreshState();
     window.location.reload()
+    // refreshState();
   };
 
   useEffect(() => {
     if (web3Modal.cachedProvider) {
        connectWallet()
-      
     }
   }, []);
 
@@ -147,8 +139,6 @@ console.log(chainId,"chainId");
   }, [provider]);
 
  
-
-
   return (
     <>
   
@@ -173,7 +163,7 @@ console.log(chainId,"chainId");
                  } className="btn btn-outline-success header-btn" placeholder="Select network">
                  <option disabled selected="true">Select network</option>
                   <option value="3">Ropsten</option>
-                  <option value="97">Bnc</option>
+                  <option value="97">Binance</option>
                 </select>
 
 
@@ -189,11 +179,6 @@ console.log(chainId,"chainId");
              
             </ul>
           </div> 
-
-
-  
-
-
 
     </>
   );
