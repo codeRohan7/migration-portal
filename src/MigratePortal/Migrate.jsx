@@ -113,6 +113,7 @@ const Migrate = (props) => {
         });
     }
   };
+console.log(contract)
 
   return (
     <>
