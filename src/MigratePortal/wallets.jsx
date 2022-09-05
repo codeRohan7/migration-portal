@@ -167,7 +167,7 @@ export default function Wallet() {
                 </select>
 
 
-                <button className="btn btn-outline-success header-btn"  onClick={disconnect}>Disconnect Wallet</button>
+                <button className="btn btn-outline-success header-btn"  onClick={disconnect}>{account.replace(/(.{8})..+/, "$1…")}</button>
 
 </div>
 

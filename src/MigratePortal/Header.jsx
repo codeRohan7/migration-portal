@@ -107,7 +107,7 @@ function Header() {
         try {
           await library.provider.request({
             method: "wallet_addEthereumChain",
-            params: [networkParams[toHex(network)]]
+            // params: [networkParams[toHex(network)]]
           });
         } catch (error) {
           setError(error);

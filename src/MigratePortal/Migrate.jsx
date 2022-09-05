@@ -155,8 +155,14 @@ const Migrate = (props) => {
                           <option disabled selected="true" value={""}>
                             Select Token
                           </option>
+                          {account?.id==97?(  <option value={"kishimotoV1"}>Kishimoto v1</option>):(
+                          <>
                           <option value={"kishimotoV1"}>Kishimoto v1</option>
                           <option value="Katsumi">Katsumi</option>
+                          </>
+
+                          )}
+                          
                         </select>
                       </div>
                       <div className="form-start">
@@ -167,6 +173,7 @@ const Migrate = (props) => {
                             </label>
                             <div className="form-input-section">
                               <input
+                              disabled
                                 type="email"
                                 className="form-control"
                                 id="walletTokenBalance"
@@ -186,6 +193,7 @@ const Migrate = (props) => {
                             </label>
                             <div className="form-input-section">
                               <input
+                              disabled
                                 type="email"
                                 className="form-control"
                                 id="V2KishimototoReceive"
@@ -215,9 +223,34 @@ const Migrate = (props) => {
                 </div>
               </div>
             </div>
+        
+          </div>
+          <div className="footer">
+              <h2>KISHIMOTO Website</h2>
+                <div className="footer-icon">
+                    <ul>
+                        <li>
+                          <img src="/assets/images/Facebook.png" alt="FB" />
+                        </li>
+                        <li>
+                          <img src="/assets/images/instagram.png" alt="FB" />
+                        </li>
+                        <li>
+                          <img src="/assets/images/Twitter.png" alt="FB" />
+                        </li>
+                        <li>
+                          <img src="/assets/images/LinkedIn.png" alt="FB" />
+                        </li>
+                        <li>
+                          <img src="/assets/images/telegram.png" alt="FB" />
+                        </li>
+                    </ul>
+                </div>
           </div>
         </div>
+      
       </div>
+      
     </>
   );
 };
