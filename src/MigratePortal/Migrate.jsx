@@ -5,6 +5,8 @@ import {
   connectMigrateContract,
 } from "../Redux/Action/Auth/index";
 import { useDispatch, useSelector } from "react-redux";
+import { BsGlobe, BsTwitter, BsTelegram, BsInstagram,BsLinkedin,BsDiscord} from 'react-icons/bs'
+import {AiFillMediumCircle} from 'react-icons/ai'
 import Web3 from "web3";
 const Migrate = (props) => {
   const dispatch = useDispatch();
@@ -228,23 +230,51 @@ const Migrate = (props) => {
           <div className="footer">
               <h2>KISHIMOTO Website</h2>
                 <div className="footer-icon">
-                    <ul>
-                        <li>
-                          <img src="/assets/images/Facebook.png" alt="FB" />
-                        </li>
-                        <li>
-                          <img src="/assets/images/instagram.png" alt="FB" />
-                        </li>
-                        <li>
-                          <img src="/assets/images/Twitter.png" alt="FB" />
-                        </li>
-                        <li>
-                          <img src="/assets/images/LinkedIn.png" alt="FB" />
-                        </li>
-                        <li>
-                          <img src="/assets/images/telegram.png" alt="FB" />
-                        </li>
-                    </ul>
+                <div className='footer_socials'>
+                  <a
+                    href='#'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <BsGlobe size={25} />
+
+                  </a>
+                  <a
+                  href="https://discord.gg/8XvkthRMg4"
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <BsDiscord size={25} />
+
+                  </a>
+                  <a
+                    href='https://twitter.com/ApexFoundation_'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <BsTwitter  size={25} />
+
+                  </a>
+              
+                      
+                  <a
+                    href='https://t.me/+UE8BNoecFxNiZjQx'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                  >
+                    <BsTelegram size={25} />
+                  </a>
+                  <a
+                  href="https://apexfoundation.medium.com"
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                
+                <AiFillMediumCircle size={25} />
+
+                </a>
+                 
+                </div>
                 </div>
           </div>
         </div>

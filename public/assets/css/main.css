@@ -288,3 +288,14 @@ option{
 
     }
 }
+.footer_socials{
+    
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 30px 21px 10px;
+}
+.footer_socials a{
+    
+   color: #fff;
+   margin: 4px;
+}
