@@ -192,7 +192,7 @@ option{
 
 /* footer :start */
 .footer{
-    position: absolute;
+    position: fixed;
     width: 100%;
     top: auto;
     bottom: 0;
