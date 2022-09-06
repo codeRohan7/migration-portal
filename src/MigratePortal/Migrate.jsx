@@ -139,7 +139,7 @@ const Migrate = (props) => {
           Toast.fire({
             text: 'Transaction successfull',
             icon:'success',
-            customClass: {
+            customClass: {  
               container: 'position-absolute'
             },
             toast: true,
