@@ -5,8 +5,16 @@ import {
   connectMigrateContract,
 } from "../Redux/Action/Auth/index";
 import { useDispatch, useSelector } from "react-redux";
-import { BsGlobe, BsTwitter, BsTelegram, BsInstagram,BsLinkedin,BsDiscord} from 'react-icons/bs'
-import {AiFillMediumCircle} from 'react-icons/ai'
+import {
+  BsGlobe,
+  BsTwitter,
+  BsTelegram,
+  BsInstagram,
+  BsLinkedin,
+  BsDiscord,
+} from "react-icons/bs";
+import Swal from 'sweetalert2'
+import { AiFillMediumCircle } from "react-icons/ai";
 import Web3 from "web3";
 const Migrate = (props) => {
   const dispatch = useDispatch();
@@ -17,9 +25,16 @@ const Migrate = (props) => {
   const [MigrateBalance, setMigrateBalance] = useState("");
   const [allowance, setAllowance] = useState("");
   const [selectedToken, setSelectedToken] = useState("");
-
-
-
+  const Toast = Swal.mixin({
+    position: 'bottom-right',
+    iconColor: 'success',
+    customClass: {
+      popup: 'colored-toast'
+    },
+    showConfirmButton:false,
+    
+    timerProgressBar: true
+  })
   // useEffect(() => {
   //   dispatch(getcontract("kishimotoV1", "3"));
   //   dispatch(connectMigrateContract());
@@ -45,31 +60,30 @@ const Migrate = (props) => {
   }, [connectWalletReducerData, getcontractReducerData]);
 
   useEffect(() => {
-    setSelectedToken("")
+    setSelectedToken("");
+  }, [connectMigrateReducerData]);
 
-  }, [connectMigrateReducerData])
-  
   useEffect(() => {
     if (account) {
       contract.methods
-        .allowance(contract._address, account?.account)
+        .allowance(migrateContract._address, account?.account)
         .call()
-        .then((res) => {
-          console.log(res);
-          setAllowance(res);
+        .then((allowance_balance) => {
+          console.log(allowance_balance);
+          setAllowance(allowance_balance);
         });
       contract.methods
         ?.balanceOf(account?.account)
         .call()
-        .then((res) => {
-          console.log(res);
-          const etherValue = Web3.utils.fromWei(res, "ether");
-          setwalletbalance(etherValue);
+        .then((wallet_balance) => {
+          console.log(wallet_balance);
+          // const etherValue = Web3.utils.fromWei(wallet_balance, "ether");
+          setwalletbalance(wallet_balance);
         });
     }
   }, [contract]);
   const handleSwitchToken = (e) => {
-    setSelectedToken(e)
+    setSelectedToken(e);
     if (account) {
       const value = { network: e, id: account?.id };
       dispatch(getcontract(value));
@@ -79,15 +93,18 @@ const Migrate = (props) => {
   useEffect(() => {
     if (walletbalance && account) {
       migrateContract.methods
-        .getClaimableToken(account?.account, contract._address)
+        .getClaimableToken(migrateContract._address, contract._address)
         .call()
-        .then((res) => {
-          const etherValue = Web3.utils.fromWei(res, "ether");
-          setMigrateBalance(etherValue);
+        .then((migrate_balance) => {
+          // const etherValue = Web3.utils.fromWei(res, "ether");
+          setMigrateBalance(migrate_balance);
         });
     }
   }, [walletbalance]);
 
+
+ 
+  
   const handleMigrate = () => {
     if (walletbalance && account) {
       migrateContract.methods
@@ -101,19 +118,90 @@ const Migrate = (props) => {
           }
         )
         .on("error", function (error) {})
-        .on("transactionHash", function (transactionHash) {})
+        .on("transactionHash", function (transactionHash) {
+          console.log(transactionHash); // contains the new contract address
+
+          Toast.fire({
+            text: 'confirming transaction...',
+            icon:'success',
+            customClass: {
+              container: 'position-absolute'
+            },
+            toast: true,
+            position: 'bottom-right'
+          })
+        })
         .on("receipt", function (receipt) {
           console.log(receipt); // contains the new contract address
         })
         .on("confirmation", function (confirmationNumber, receipt) {
-          console.log(confirmationNumber, receipt);
+          console.log(confirmationNumber,receipt);
+          Toast.fire({
+            text: 'Transaction successfull',
+            icon:'success',
+            customClass: {
+              container: 'position-absolute'
+            },
+            toast: true,
+            timer: 10000,
+
+            position: 'bottom-right'
+          })
         })
         .then(function (newContractInstance) {
           console.log(newContractInstance); // instance with the new contract address
         });
     }
   };
-console.log(contract)
+   
+  const handleApprove = () => {
+    if (walletbalance && account) {
+      contract.methods
+        .approve(migrateContract._address,walletbalance)
+        .send(
+          {
+            from: account?.account,
+          },
+          function (error, transactionHash) {
+            console.log(error, transactionHash);
+          }
+        )
+        .on("error", function (error) {})
+        .on("transactionHash", function (transactionHash) {
+
+          Toast.fire({
+            text: 'Approving transaction...',
+            icon:'success',
+            customClass: {
+              container: 'position-absolute'
+            },
+            toast: true,
+    timer: 15000,
+
+            position: 'bottom-right'
+          })
+        })
+        .on("receipt", function (receipt) {
+
+        })
+        .on("confirmation", function (confirmationNumber, receipt) {
+
+          Toast.fire({
+            text: 'transaction confirmed...',
+            icon:'success',
+            customClass: {
+              container: 'position-absolute'
+            },
+            toast: true,
+            position: 'bottom-right'
+          })
+
+        })
+        .then(function (newContractInstance) {
+          console.log(newContractInstance); // instance with the new contract address
+        });
+    }
+  };
 
   return (
     <>
@@ -150,7 +238,7 @@ console.log(contract)
                     <form className="form-section">
                       <div className="btn-group">
                         <select
-                        value={selectedToken}
+                          value={selectedToken}
                           onChange={(e) => handleSwitchToken(e.target.value)}
                           className="btn btn-white dropdown-toggle"
                           style={{ background: "white" }}
@@ -158,14 +246,16 @@ console.log(contract)
                           <option disabled selected="true" value={""}>
                             Select Token
                           </option>
-                          {account?.id==97?(  <option value={"kishimotoV1"}>Kishimoto v1</option>):(
-                          <>
-                          <option value={"kishimotoV1"}>Kishimoto v1</option>
-                          <option value="Katsumi">Katsumi</option>
-                          </>
-
+                          {account?.id == 97 ? (
+                            <option value={"kishimotoV1"}>Kishimoto v1</option>
+                          ) : (
+                            <>
+                              <option value={"kishimotoV1"}>
+                                Kishimoto v1
+                              </option>
+                              <option value="Katsumi">Katsumi</option>
+                            </>
                           )}
-                          
                         </select>
                       </div>
                       <div className="form-start">
@@ -176,7 +266,7 @@ console.log(contract)
                             </label>
                             <div className="form-input-section">
                               <input
-                              disabled
+                                disabled
                                 type="email"
                                 className="form-control"
                                 id="walletTokenBalance"
@@ -186,7 +276,9 @@ console.log(contract)
                                 id="emailHelp"
                                 className="form-text text-muted"
                               >
-                                {walletbalance ? walletbalance : "0.00"}
+                                {walletbalance ? (
+                                  Web3.utils.fromWei(walletbalance, "ether")
+                                ) : "0.00"}
                               </small>
                             </div>
                           </div>
@@ -196,7 +288,7 @@ console.log(contract)
                             </label>
                             <div className="form-input-section">
                               <input
-                              disabled
+                                disabled
                                 type="email"
                                 className="form-control"
                                 id="V2KishimototoReceive"
@@ -206,19 +298,35 @@ console.log(contract)
                                 id="emailHelp"
                                 className="form-text text-muted"
                               >
-                                {MigrateBalance ? MigrateBalance : "0.00"}
+                                {MigrateBalance ? (
+                                  Web3.utils.fromWei(MigrateBalance, "ether")
+                                )  : "0.00"}
                               </small>
                             </div>
                           </div>
-
-                          <button
-                            type="button"
-                            className="btn btn-outline-success submit-btn"
-                            onClick={handleMigrate}
-                          >
-                            {" "}
-                            {allowance > walletbalance ? "APPROVE" : "MIGRATE"}
-                          </button>
+{
+   walletbalance > allowance ? (
+    <button
+    disabled={!walletbalance>0}
+    type="button"
+    className="btn btn-outline-success submit-btn"
+    onClick={handleApprove}
+  >
+    {"APPROVE"}
+  </button>
+  ) : (
+    <button
+    disabled={!walletbalance>0}
+    type="button"
+    className="btn btn-outline-success submit-btn"
+    onClick={handleMigrate}
+  >
+  
+    {"MIGRATE"}
+  </button>
+  )
+}
+                       
                         </form>
                       </div>
                     </form>
@@ -226,62 +334,36 @@ console.log(contract)
                 </div>
               </div>
             </div>
-        
           </div>
           <div className="footer">
-              <h2>KISHIMOTO Website</h2>
-                <div className="footer-icon">
-                <div className='footer_socials'>
-                  <a
-                    href='#'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <BsGlobe size={25} />
-
-                  </a>
-                  <a
-                  href="https://discord.gg/8XvkthRMg4"
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <BsDiscord size={25} />
-
-                  </a>
-                  <a
-                    href='https://twitter.com/ApexFoundation_'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <BsTwitter  size={25} />
-
-                  </a>
-              
-                      
-                  <a
-                    href='https://t.me/+UE8BNoecFxNiZjQx'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
-                    <BsTelegram size={25} />
-                  </a>
-                  <a
-                  href="https://apexfoundation.medium.com"
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                
-                <AiFillMediumCircle size={25} />
-
+            <h2>KISHIMOTO Website</h2>
+            <div className="footer-icon">
+              <div className="footer_socials">
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <BsGlobe size={25} />
                 </a>
-                 
-                </div>
-                </div>
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <BsDiscord size={25} />
+                </a>
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <BsTwitter size={25} />
+                </a>
+
+                <a href="#" target="_blank" rel="noopener noreferrer">
+                  <BsTelegram size={25} />
+                </a>
+                <a
+                  href="https://medium.com/@kishimotoinu/kishimoto-inu-852ee953b83f"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AiFillMediumCircle size={25} />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      
       </div>
-      
     </>
   );
 };

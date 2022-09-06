@@ -192,11 +192,12 @@ option{
 
 /* footer :start */
 .footer{
-    position: fixed;
+    position: relative;
     width: 100%;
     top: auto;
     bottom: 0;
     background: #1c1c1cb5;
+    opacity: 0.8;
 }
 .footer h2{
     font-weight: 400;
