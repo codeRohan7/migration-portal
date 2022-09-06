@@ -187,11 +187,13 @@ const Migrate = (props) => {
         .on("confirmation", function (confirmationNumber, receipt) {
 
           Toast.fire({
-            text: 'transaction confirmed...',
+            html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://ropsten.etherscan.io/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
             icon:'success',
             customClass: {
               container: 'position-absolute'
             },
+            timer: 8000,
+
             toast: true,
             position: 'bottom-right'
           })
