@@ -300,3 +300,9 @@ option{
    color: #fff;
    margin: 4px;
 }
+@media screen and (max-width: 600px) {
+    .footer_socials{
+    
+        justify-content: center;
+    }
+  }
