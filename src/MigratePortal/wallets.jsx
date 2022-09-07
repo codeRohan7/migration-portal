@@ -1,6 +1,5 @@
 import React,{ useEffect, useState } from "react";
 
-import SelectWalletModal from "./Modal";
 import { useWeb3React } from "@web3-react/core";
 import { connectors } from "./connectors";
 
@@ -12,12 +11,15 @@ import { providerOptions } from "./providers";
 import { useDispatch } from "react-redux";
 import {connectWalletAction,connectMigrateContract} from '../Redux/Action/Auth/index'
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { FaEthereum } from "react-icons/fa";
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
@@ -51,7 +53,11 @@ export default function Wallet() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [age, setAge] = React.useState('');
 
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
   const { activate } = useWeb3React();
   const dispatch =useDispatch()
   const connectWallet = async () => {
@@ -214,17 +220,24 @@ export default function Wallet() {
                 </div>
 
           ) : (
+
+            
 <div className="d-flex">
-  
-<select onChange={(e)=>{handleNetwork(e);switchNetwork(e.target.value)}
-                 } className="btn btn-outline-success header-btn" placeholder="Select network">
-                 <option disabled selected="true">Select network</option>
-                  <option style={{'backgroundImage':'/assets/images/bnb-bnb-logo.png'}} value="3">Ropsten</option>
-                  <option value="97"><img src="Photos/indo.jpg" id="captchaimg"/>Binance</option>
-                </select>
 
+<FormControl >
+        <InputLabel id="demo-simple-select-label">Select Network</InputLabel>
+        <Select
+          label="Select Network"
+          id="demo-simple-select"
+          value={account.network}
+          onChange={(e)=>{handleNetwork(e);switchNetwork(e.target.value)}}
+        >
+          <MenuItem value={3}><img width={'20px'} className="mr-1" src="/assets/images/ethereum-eth-logo.png"/>Ropsten</MenuItem>
+          <MenuItem value={97}><img width={'20px'} className="mr-1" src="/assets/images/bnb-bnb-logo.png"/>Bnb</MenuItem>
+        </Select>
+        </FormControl>
 
-                <button  className="btn btn-outline-success header-btn" onClick={handleOpen}>{account.replace(/(.{8})..+/, "$1…")}</button>
+      <button  className="btn btn-outline-success header-btn" onClick={handleOpen}>{account.replace(/(.{8})..+/, "$1…")}</button>
 
 </div>
 
@@ -236,6 +249,7 @@ export default function Wallet() {
              
             </ul>
           </div> 
+       
 
     </>
   );

@@ -309,6 +309,19 @@ option{
 font-weight: 700;
 font-size: 15px;
 }
+#demo-simple-select-label{
+    color: #fff;
+    font-size: 12px;
+}
+
+#demo-simple-select{
+    width: 100px;
+    border: 2px solid #51C4C9;
+    border-radius: 12px;
+}
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+    padding: 8px 14px !important;
+}
 
 @media screen and (max-width: 600px) {
     .footer_socials{
