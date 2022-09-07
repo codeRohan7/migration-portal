@@ -11,6 +11,20 @@ import Web3Modal from "web3modal";
 import { providerOptions } from "./providers";
 import { useDispatch } from "react-redux";
 import {connectWalletAction,connectMigrateContract} from '../Redux/Action/Auth/index'
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 const style = {
   position: 'absolute',
   top: '50%',
@@ -22,7 +36,6 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-
 export default function Wallet() {
   const [provider, setProvider] = useState();
   const [library, setLibrary] = useState();
@@ -34,6 +47,7 @@ export default function Wallet() {
   const [message, setMessage] = useState("");
   const [signedMessage, setSignedMessage] = useState("");
   const [verified, setVerified] = useState();
+  const [isCopied, setIsCopied] = useState(false);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -138,11 +152,54 @@ export default function Wallet() {
     }
   }, [provider]);
 
- 
+  async function copyTextToClipboard (text) {
+    if ('clipboard' in navigator) {
+      return await navigator.clipboard.writeText(text);
+    } else {
+      return document.execCommand('copy', true, text);
+    }
+  }
+  const handleCopyClick = () => {
+    // Asynchronously call copyTextToClipboard
+    copyTextToClipboard(account)
+      .then(() => {
+        // setIsCopied(true);
+        setTimeout(() => {
+          // setIsCopied(false);
+        }, 1500);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
     <>
   
                 <div>
+
+<Modal
+  open={open}
+  onClose={handleClose}
+  aria-labelledby="modal-modal-title"
+  aria-describedby="modal-modal-description"
+>
+<Box sx={style}>
+   <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+    {console.log(navigator.clipboard.writeText({account}))}
+<Grid item xs={6}>
+    <button  className="btn btn-outline-success" onClick={handleCopyClick}>copy address</button>
+       
+  </Grid>
+  <Grid item xs={6}>
+  <button  className="btn btn-outline-success" onClick={disconnect}>Disconnect</button>
+  </Grid>
+  
+</Grid>
+  </Box>
+
+</Modal>
+
             <ul className="navbar-nav ml-auto">
 
 
@@ -167,7 +224,7 @@ export default function Wallet() {
                 </select>
 
 
-                <button className="btn btn-outline-success header-btn"  onClick={disconnect}>{account.replace(/(.{8})..+/, "$1…")}</button>
+                <button  className="btn btn-outline-success header-btn" onClick={handleOpen}>{account.replace(/(.{8})..+/, "$1…")}</button>
 
 </div>
 

@@ -25,6 +25,7 @@ const Migrate = (props) => {
   const [MigrateBalance, setMigrateBalance] = useState("");
   const [allowance, setAllowance] = useState("");
   const [selectedToken, setSelectedToken] = useState("");
+  const [Approved,setApproved]=useState(false)
   const Toast = Swal.mixin({
     position: 'bottom-right',
     iconColor: 'success',
@@ -122,7 +123,7 @@ const Migrate = (props) => {
           console.log(transactionHash); // contains the new contract address
 
           Toast.fire({
-            text: 'confirming transaction...',
+            text: 'confirming migration...',
             icon:'success',
             customClass: {
               container: 'position-absolute'
@@ -136,17 +137,35 @@ const Migrate = (props) => {
         })
         .on("confirmation", function (confirmationNumber, receipt) {
           console.log(confirmationNumber,receipt);
-          Toast.fire({
-            text: 'Transaction successfull',
-            icon:'success',
-            customClass: {  
-              container: 'position-absolute'
-            },
-            toast: true,
-            timer: 10000,
-
-            position: 'bottom-right'
-          })
+          if(account.id=='97'){
+            Toast.fire({
+              html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://testnet.bscscan.com/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
+              icon:'success',
+              customClass: {
+                container: 'position-absolute'
+              },
+              timer: 8000,
+  
+              toast: true,
+              position: 'bottom-right'
+            }).then(()=>{
+              window.location.reload()
+            })
+          }else{
+            Toast.fire({
+              html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://ropsten.etherscan.io/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
+              icon:'success',
+              customClass: {
+                container: 'position-absolute'
+              },
+              timer: 8000,
+  
+              toast: true,
+              position: 'bottom-right'
+            }).then(()=>{
+              window.location.reload()
+            })
+          }
         })
         .then(function (newContractInstance) {
           console.log(newContractInstance); // instance with the new contract address
@@ -176,7 +195,7 @@ const Migrate = (props) => {
               container: 'position-absolute'
             },
             toast: true,
-    timer: 15000,
+    timer: 25000,
 
             position: 'bottom-right'
           })
@@ -198,6 +217,8 @@ const Migrate = (props) => {
   
               toast: true,
               position: 'bottom-right'
+            }).then(()=>{
+              window.location.reload()
             })
           }else{
             Toast.fire({
@@ -210,8 +231,11 @@ const Migrate = (props) => {
   
               toast: true,
               position: 'bottom-right'
+            }).then(()=>{
+              window.location.reload()
             })
           }
+          setApproved(true)
         
 
         })
@@ -323,7 +347,7 @@ const Migrate = (props) => {
                             </div>
                           </div>
 {
-   walletbalance > allowance ? (
+   walletbalance > allowance ? !Approved ?  (
     <button
     disabled={!walletbalance>0}
     type="button"
@@ -342,8 +366,19 @@ const Migrate = (props) => {
   
     {"MIGRATE"}
   </button>
+  ):(
+    <button
+    disabled={!walletbalance>0}
+    type="button"
+    className="btn btn-outline-success submit-btn"
+    onClick={handleMigrate}
+  >
+  
+    {"MIGRATE"}
+  </button>
   )
 }
+
                        
                         </form>
                       </div>
