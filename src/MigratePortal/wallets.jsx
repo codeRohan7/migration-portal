@@ -219,8 +219,8 @@ export default function Wallet() {
 <select onChange={(e)=>{handleNetwork(e);switchNetwork(e.target.value)}
                  } className="btn btn-outline-success header-btn" placeholder="Select network">
                  <option disabled selected="true">Select network</option>
-                  <option value="3">Ropsten</option>
-                  <option value="97">Binance</option>
+                  <option style={{'backgroundImage':'/assets/images/bnb-bnb-logo.png'}} value="3">Ropsten</option>
+                  <option value="97"><img src="Photos/indo.jpg" id="captchaimg"/>Binance</option>
                 </select>
 
 
