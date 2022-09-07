@@ -186,17 +186,33 @@ const Migrate = (props) => {
         })
         .on("confirmation", function (confirmationNumber, receipt) {
 
-          Toast.fire({
-            html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://ropsten.etherscan.io/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
-            icon:'success',
-            customClass: {
-              container: 'position-absolute'
-            },
-            timer: 8000,
-
-            toast: true,
-            position: 'bottom-right'
-          })
+          
+          if(account.id=='97'){
+            Toast.fire({
+              html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://testnet.bscscan.com/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
+              icon:'success',
+              customClass: {
+                container: 'position-absolute'
+              },
+              timer: 8000,
+  
+              toast: true,
+              position: 'bottom-right'
+            })
+          }else{
+            Toast.fire({
+              html: `<div>transaction successfull <a style={{color:'blue'}} target='_blank' href='https://ropsten.etherscan.io/tx/${receipt.transactionHash}' >View on Explorer</a></div>`,
+              icon:'success',
+              customClass: {
+                container: 'position-absolute'
+              },
+              timer: 8000,
+  
+              toast: true,
+              position: 'bottom-right'
+            })
+          }
+        
 
         })
         .then(function (newContractInstance) {
