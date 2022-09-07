@@ -142,7 +142,7 @@ export default function Wallet() {
   return (
     <>
   
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                <div>
             <ul className="navbar-nav ml-auto">
 
 
