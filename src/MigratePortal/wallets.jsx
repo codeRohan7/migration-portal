@@ -82,6 +82,7 @@ export default function Wallet() {
   const handleNetwork = (e) => {
     const id = e.target.value;
     dispatch(connectWalletAction({account,id}))
+    console.log(id);
     dispatch(connectMigrateContract(id))
 
     setNetwork(Number(id));

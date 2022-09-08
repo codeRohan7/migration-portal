@@ -98,7 +98,7 @@ console.log(value);
 
         switch (value) {
 
-            case "3":
+            case 3:
                 try {
                     response = new web3.eth.Contract(
         
@@ -106,6 +106,7 @@ console.log(value);
                         contractMigrate
                     )
                     yield put({ type: types.CONNECT_MIGRATE_SUCCESS, response });
+                    console.log(response);
                 }
                 catch (error) {
                     yield put({
@@ -115,7 +116,7 @@ console.log(value);
                 }
                 break;
         
-                case '97':
+                case 97:
                     try {
                         response = new web3.eth.Contract(
             

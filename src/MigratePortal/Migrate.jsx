@@ -57,7 +57,7 @@ const Migrate = (props) => {
     setcontract(getcontractReducerData?.response);
     setAccount(connectWalletReducerData?.response);
     setMigrate(connectMigrateReducerData?.response);
-
+console.log(connectMigrateReducerData);
     setwalletbalance("");
     setMigrateBalance("");
   }, [connectWalletReducerData, getcontractReducerData]);
@@ -66,10 +66,11 @@ const Migrate = (props) => {
     setSelectedToken("");
   }, [connectMigrateReducerData]);
 
+  console.log(migrateContract);
   useEffect(() => {
     if (account) {
       contract.methods
-        .allowance(account?.account, migrateContract._address)
+        .allowance(account?.account, migrateContract?._address)
         .call()
         .then((allowance_balance) => {
           console.log(allowance_balance);
